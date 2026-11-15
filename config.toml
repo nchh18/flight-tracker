@@ -1,0 +1,151 @@
+# SIN flight tracker settings. Edit freely; changes apply on the next run.
+# Prices are in the currency below (SGD), for 1 adult, economy.
+
+[schedule]
+# GitHub runs the tracker every 8 hours (see .github/workflows/tracker.yml).
+# This only stops a scheduled run from repeating a search that happened less
+# than this many hours ago. Manual runs from the Actions tab always search.
+min_hours_between_runs = 4
+
+[dashboard]
+top_n = 3              # fares shown per destination region (and trip type)
+lookback_days = 7      # only show fares seen in the last N days
+# Paste your dashboard link here to include it in the daily Telegram summary,
+# e.g. "https://<your-github-username>.github.io/<repo-name>/"
+url = ""
+
+[search]
+origin = "SIN"
+currency = "SGD"
+adults = 1
+cabin = "economy"               # economy | premium-economy | business | first
+
+# Departure window, counted from today (up to 1 year). Airlines usually open
+# sales about 11 months ahead, so the far end often has no flights yet; those
+# searches are simply skipped and re-tried later.
+days_ahead_min = 14
+days_ahead_max = 365
+
+# Searches per airport per run, for each trip type the region uses. When this
+# is 2 or more, one search re-checks the cheapest dates found recently; the rest
+# explore new dates. With the regions below that's 26 airports x 3 returns
+# + 7 European airports x (3 one-way + 3 return) = 120 searches a run, about
+# 10 minutes, and each week of the 1-year window gets checked every ~9 days.
+one_way_samples = 3
+round_trip_samples = 3
+recheck_best = true
+
+# Transits are fine by default. Uncomment to cap the number of stops.
+# max_stops = 2
+
+# Hide "self-transfer" / separate-ticket itineraries. These are often cheaper,
+# but if a leg is delayed and you miss the next one, the airline owes you nothing.
+hide_self_transfer = true
+
+# Random pause between searches (seconds). Keeps the traffic polite.
+delay_seconds = [2.0, 5.0]
+
+[alerts]
+# Alert when a fare is this % below the typical (median) price seen for that
+# destination recently. Needs a few days of history before it starts working.
+drop_pct = 25
+baseline_days = 30
+min_samples = 15
+
+# Don't repeat an alert for the same flight dates unless it drops another 5%.
+realert_drop_pct = 5
+max_alerts_per_run = 8
+
+# Daily summary on Telegram: sent by the first run at or after this hour
+# (Singapore time), covering the cheapest fares seen over the last N hours.
+digest_hour_sgt = 8
+digest_lookback_hours = 72
+
+# How long to keep price history (days).
+history_days = 60
+
+# ---------------------------------------------------------------------------
+# Destinations. Each region has:
+#   airports           IATA codes searched from SIN
+#   trips              which fares to search: ["return"], ["one-way"] or both
+#   trip_lengths       return-trip lengths in days (one is picked per search)
+#   round_trip_target  alert whenever a return fare is at or below this (0 = off)
+#   one_way_target     same, for one-way fares (only used if "one-way" is in trips)
+# The targets are rough starting guesses. Tune them once you see real prices.
+# ---------------------------------------------------------------------------
+
+[regions.thailand]
+label = "Thailand"
+airports = ["BKK", "DMK", "HKT", "CNX"]
+trips = ["return"]
+trip_lengths = [4, 7]
+round_trip_target = 150
+
+[regions.vietnam]
+label = "Vietnam"
+airports = ["SGN", "HAN", "DAD"]
+trips = ["return"]
+trip_lengths = [4, 7]
+round_trip_target = 180
+
+[regions.hong_kong]
+label = "Hong Kong"
+airports = ["HKG"]
+trips = ["return"]
+trip_lengths = [4, 7]
+round_trip_target = 260
+
+[regions.taiwan]
+label = "Taiwan"
+airports = ["TPE"]
+trips = ["return"]
+trip_lengths = [5, 7]
+round_trip_target = 280
+
+[regions.china]
+label = "China"
+airports = ["PEK", "PVG", "CAN", "SZX"]
+trips = ["return"]
+trip_lengths = [5, 7]
+round_trip_target = 320
+
+[regions.japan]
+label = "Japan"
+airports = ["HND", "NRT", "KIX", "FUK", "CTS"]
+trips = ["return"]
+trip_lengths = [5, 7]
+round_trip_target = 420
+
+[regions.korea]
+label = "Korea"
+airports = ["ICN", "PUS"]
+trips = ["return"]
+trip_lengths = [5, 7]
+round_trip_target = 400
+
+[regions.australia]
+label = "Australia"
+airports = ["SYD", "MEL", "BNE", "PER"]
+trips = ["return"]
+trip_lengths = [7, 10]
+round_trip_target = 420
+
+[regions.new_zealand]
+label = "New Zealand"
+airports = ["AKL", "CHC"]
+trips = ["return"]
+trip_lengths = [10, 14]
+round_trip_target = 750
+
+[regions.europe]
+label = "Europe"
+airports = ["LHR", "CDG", "AMS", "FRA", "FCO", "BCN", "IST"]
+trips = ["one-way", "return"]
+trip_lengths = [10, 14]
+one_way_target = 500
+round_trip_target = 900
+
+
+# Optional: friendly names for airports you add (shown in messages).
+# [names]
+# MUC = "Munich"
