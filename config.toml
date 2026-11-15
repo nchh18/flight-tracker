@@ -12,7 +12,7 @@ top_n = 3              # fares shown per destination (and trip type)
 lookback_days = 7      # only show fares seen in the last N days
 # Paste your dashboard link here to include it in the daily Telegram summary,
 # e.g. "https://<your-github-username>.github.io/<repo-name>/"
-url = ""
+url = "https://nchh18.github.io/flight-tracker/"
 
 [search]
 origin = "SIN"
