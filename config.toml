@@ -8,7 +8,7 @@
 min_hours_between_runs = 4
 
 [dashboard]
-top_n = 3              # fares shown per destination region (and trip type)
+top_n = 3              # fares shown per destination (and trip type)
 lookback_days = 7      # only show fares seen in the last N days
 # Paste your dashboard link here to include it in the daily Telegram summary,
 # e.g. "https://<your-github-username>.github.io/<repo-name>/"
@@ -26,11 +26,12 @@ cabin = "economy"               # economy | premium-economy | business | first
 days_ahead_min = 14
 days_ahead_max = 365
 
-# Searches per airport per run, for each trip type the region uses. When this
-# is 2 or more, one search re-checks the cheapest dates found recently; the rest
-# explore new dates. With the regions below that's 26 airports x 3 returns
-# + 7 European airports x (3 one-way + 3 return) = 120 searches a run, about
-# 10 minutes, and each week of the 1-year window gets checked every ~9 days.
+# Searches per airport per run, for each trip type a destination uses. When
+# this is 2 or more, one search re-checks the cheapest dates found recently and
+# the rest explore new dates. Groups and destinations can override it (Europe
+# uses 2, because it has many airports). With the settings below a run does
+# 25 Asia-Pacific airports x 3 returns + 26 European airports x (2 one-way +
+# 2 return) = 179 searches, about 15 minutes.
 one_way_samples = 3
 round_trip_samples = 3
 recheck_best = true
@@ -41,6 +42,23 @@ recheck_best = true
 # Hide "self-transfer" / separate-ticket itineraries. These are often cheaper,
 # but if a leg is delayed and you miss the next one, the airline owes you nothing.
 hide_self_transfer = true
+
+# Never show itineraries that include any of these airlines (budget carriers).
+# A flight is skipped if any leg is on one of them. Remove a name to allow it,
+# or add one using the airline's name as Google Flights shows it.
+exclude_airlines = [
+  # Southeast Asia
+  "Scoot", "AirAsia", "Jetstar", "VietJet", "Vietjet Air", "Cebu Pacific", "Lion Air",
+  "Citilink", "Super Air Jet", "Nok Air", "Vietravel Airlines",
+  # North Asia
+  "ZIPAIR", "Peach", "Spring Airlines", "Spring Japan", "HK Express", "Tigerair",
+  "Jeju Air", "Jin Air", "T'way Air", "Air Busan", "Air Seoul", "Eastar Jet",
+  # South Asia and Middle East
+  "IndiGo", "Air India Express", "SpiceJet", "Akasa Air", "flydubai", "Air Arabia", "flynas",
+  # Europe
+  "Ryanair", "easyJet", "Wizz Air", "Vueling", "Transavia", "Eurowings", "Volotea",
+  "Norwegian", "Pegasus", "AJet", "Jet2", "PLAY", "Norse Atlantic", "French bee", "LEVEL",
+]
 
 # Random pause between searches (seconds). Keeps the traffic polite.
 delay_seconds = [2.0, 5.0]
@@ -65,87 +83,197 @@ digest_lookback_hours = 72
 history_days = 60
 
 # ---------------------------------------------------------------------------
-# Destinations. Each region has:
-#   airports           IATA codes searched from SIN
+# Groups hold shared settings for their destinations; a destination's own
+# settings override its group's. Settings:
 #   trips              which fares to search: ["return"], ["one-way"] or both
 #   trip_lengths       return-trip lengths in days (one is picked per search)
 #   round_trip_target  alert whenever a return fare is at or below this (0 = off)
-#   one_way_target     same, for one-way fares (only used if "one-way" is in trips)
-# The targets are rough starting guesses. Tune them once you see real prices.
+#   one_way_target     same, for one-way fares
+#   one_way_samples / round_trip_samples   override the searches per airport
+# Targets are rough starting guesses for full-service airlines. Tune them once
+# you've seen a week of real prices.
 # ---------------------------------------------------------------------------
+
+[groups.asia]
+label = "Asia-Pacific"
+trips = ["return"]
+
+[groups.europe]
+label = "Europe"
+trips = ["one-way", "return"]
+trip_lengths = [10, 14]
+one_way_samples = 2
+round_trip_samples = 2
+one_way_target = 650
+round_trip_target = 1050
+
+# ----------------------------------------------------------------- Asia-Pacific
 
 [regions.thailand]
 label = "Thailand"
-airports = ["BKK", "DMK", "HKT", "CNX"]
-trips = ["return"]
+group = "asia"
+airports = ["BKK", "HKT", "CNX"]
 trip_lengths = [4, 7]
-round_trip_target = 150
+round_trip_target = 250
 
 [regions.vietnam]
 label = "Vietnam"
+group = "asia"
 airports = ["SGN", "HAN", "DAD"]
-trips = ["return"]
 trip_lengths = [4, 7]
-round_trip_target = 180
+round_trip_target = 280
 
 [regions.hong_kong]
 label = "Hong Kong"
+group = "asia"
 airports = ["HKG"]
-trips = ["return"]
 trip_lengths = [4, 7]
-round_trip_target = 260
+round_trip_target = 380
 
 [regions.taiwan]
 label = "Taiwan"
+group = "asia"
 airports = ["TPE"]
-trips = ["return"]
 trip_lengths = [5, 7]
-round_trip_target = 280
+round_trip_target = 420
 
 [regions.china]
 label = "China"
+group = "asia"
 airports = ["PEK", "PVG", "CAN", "SZX"]
-trips = ["return"]
 trip_lengths = [5, 7]
-round_trip_target = 320
+round_trip_target = 420
 
 [regions.japan]
 label = "Japan"
+group = "asia"
 airports = ["HND", "NRT", "KIX", "FUK", "CTS"]
-trips = ["return"]
 trip_lengths = [5, 7]
-round_trip_target = 420
+round_trip_target = 650
 
 [regions.korea]
 label = "Korea"
+group = "asia"
 airports = ["ICN", "PUS"]
-trips = ["return"]
 trip_lengths = [5, 7]
-round_trip_target = 400
+round_trip_target = 600
 
 [regions.australia]
 label = "Australia"
+group = "asia"
 airports = ["SYD", "MEL", "BNE", "PER"]
-trips = ["return"]
 trip_lengths = [7, 10]
-round_trip_target = 420
+round_trip_target = 650
 
 [regions.new_zealand]
 label = "New Zealand"
+group = "asia"
 airports = ["AKL", "CHC"]
-trips = ["return"]
 trip_lengths = [10, 14]
-round_trip_target = 750
+round_trip_target = 1000
 
-[regions.europe]
-label = "Europe"
-airports = ["LHR", "CDG", "AMS", "FRA", "FCO", "BCN", "IST"]
-trips = ["one-way", "return"]
-trip_lengths = [10, 14]
-one_way_target = 500
-round_trip_target = 900
+# ----------------------------------------------------------------------- Europe
 
+[regions.portugal]
+label = "Portugal"
+group = "europe"
+airports = ["LIS", "OPO"]
+
+[regions.spain]
+label = "Spain"
+group = "europe"
+airports = ["MAD", "BCN"]
+
+[regions.france]
+label = "France"
+group = "europe"
+airports = ["CDG", "NCE"]
+
+[regions.ireland]
+label = "Ireland"
+group = "europe"
+airports = ["DUB"]
+
+[regions.netherlands]
+label = "Netherlands"
+group = "europe"
+airports = ["AMS"]
+
+[regions.belgium]
+label = "Belgium"
+group = "europe"
+airports = ["BRU"]
+
+[regions.germany]
+label = "Germany"
+group = "europe"
+airports = ["FRA", "MUC"]
+
+[regions.luxembourg]
+label = "Luxembourg"
+group = "europe"
+airports = ["LUX"]
+
+[regions.italy]
+label = "Italy"
+group = "europe"
+airports = ["FCO", "MXP"]
+
+[regions.greece]
+label = "Greece"
+group = "europe"
+airports = ["ATH"]
+
+[regions.croatia]
+label = "Croatia"
+group = "europe"
+airports = ["ZAG", "DBV"]
+
+[regions.slovenia]
+label = "Slovenia"
+group = "europe"
+airports = ["LJU"]
+
+[regions.austria]
+label = "Austria"
+group = "europe"
+airports = ["VIE"]
+
+[regions.czechia]
+label = "Czechia"
+group = "europe"
+airports = ["PRG"]
+
+[regions.hungary]
+label = "Hungary"
+group = "europe"
+airports = ["BUD"]
+
+[regions.denmark]
+label = "Denmark"
+group = "europe"
+airports = ["CPH"]
+
+[regions.sweden]
+label = "Sweden"
+group = "europe"
+airports = ["ARN"]
+
+[regions.finland]
+label = "Finland"
+group = "europe"
+airports = ["HEL"]
+
+[regions.iceland]
+label = "Iceland"
+group = "europe"
+airports = ["KEF"]
+
+[regions.norway]
+label = "Norway"
+group = "europe"
+airports = ["OSL"]
 
 # Optional: friendly names for airports you add (shown in messages).
 # [names]
-# MUC = "Munich"
+# BER = "Berlin"

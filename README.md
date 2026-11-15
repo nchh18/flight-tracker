@@ -2,12 +2,14 @@
 
 A free tracker that checks Google Flights fares out of Singapore every 8 hours on GitHub's servers, so your laptop can stay off. It keeps a dashboard of the 3 cheapest fares for each destination and messages you on Telegram when it spots a deal.
 
-**Destinations:** Thailand, Vietnam, Hong Kong, Taiwan, China, Japan, Korea, Australia, New Zealand and Europe. Departures are searched from 2 weeks to 1 year out.
+**Destinations:**
 
-**Trip types:**
+- **Asia-Pacific:** Thailand, Vietnam, Hong Kong, Taiwan, China, Japan, Korea, Australia and New Zealand. Return trips only.
+- **Europe:** Portugal, Spain, France, Ireland, Netherlands, Belgium, Germany, Luxembourg, Italy, Greece, Croatia, Slovenia, Austria, Czechia, Hungary, Denmark, Sweden, Finland, Iceland and Norway. Both one-way and return.
 
-- Outside Europe, it searches return trips only.
-- In Europe, it searches both one-way and return.
+Departures are searched from 2 weeks to 1 year out.
+
+**No budget airlines.** Any itinerary with a leg on a low-cost carrier is skipped, for example Scoot, AirAsia, Jetstar, VietJet, Ryanair or easyJet. The full list is `exclude_airlines` in `config.toml`.
 
 **What you get:**
 
@@ -20,8 +22,8 @@ GitHub Actions runs `tracker.py` at about 08:17, 16:17 and 00:17 Singapore time.
 
 Each run:
 
-1. Does about 120 searches in roughly 10 minutes.
-2. Works through the departure weeks that have gone longest without a check, so every week of the year gets looked at about every 9 days.
+1. Does about 180 searches in roughly 15 minutes.
+2. Works through the departure weeks that have gone longest without a check, so the year ahead gets covered every week or two.
 3. Re-checks the cheapest dates found so far.
 4. Saves the results to `data/prices.csv` and rebuilds the dashboard.
 5. Commits both back to the repo.
@@ -43,7 +45,7 @@ Prices come from Google Flights through the open-source [fast-flights](https://g
 |---|---|---|
 | Dashboard | A proper web page at `https://<you>.github.io/<repo>/`, which works well on your phone | The `DASHBOARD.md` file in your repo, opened on github.com or in the GitHub app |
 | Who can see it | Anyone with the link can see the fares and your destination list. Your Telegram details stay secret either way. | Only you |
-| Free run time | Unlimited | 2,000 minutes a month; this uses about 900 |
+| Free run time | Unlimited | 2,000 minutes a month; this uses about 1,400 |
 
 GitHub Pages, the free web hosting, only works on public repos unless you pay for GitHub Pro.
 
@@ -74,7 +76,7 @@ GitHub Pages, the free web hosting, only works on public repos unless you pay fo
 ### 5. Run it once
 
 1. Go to the **Actions** tab, open **Flight tracker**, and click **Run workflow**.
-2. Wait about 10 minutes.
+2. Wait about 15 minutes.
 3. Afterwards, the repo has a `data` folder, a `docs` folder and a `DASHBOARD.md`.
 
 If the last step fails with a permissions error:
@@ -102,7 +104,7 @@ That's it. From now on it runs by itself every 8 hours.
 
 ## Reading the dashboard
 
-The top row lists every destination with its cheapest return fare, cheapest first. Use it to see where it's cheap to go right now.
+The top of the page lists every destination with its cheapest return fare, cheapest first, split into Asia-Pacific and Europe. Use it to see where it's cheap to go right now.
 
 Under each destination you'll see:
 
@@ -118,20 +120,25 @@ The first day or two will look sparse. The full year of dates fills in over abou
 
 Edit it on github.com with the pencil icon. Changes apply from the next run.
 
+Destinations are listed under `[regions.<name>]`. Each belongs to a group, `[groups.asia]` or `[groups.europe]`, which holds shared settings. A setting on a destination overrides its group's.
+
 | Setting | What it does |
 |---|---|
-| `airports` per region | Where to search. Add or remove IATA codes. |
-| `trips` per region | `["return"]`, `["one-way"]`, or both |
-| `trip_lengths` per region | Return-trip lengths to try, in days |
-| `round_trip_target`, `one_way_target` | Telegram alert whenever a fare is at or below this. These are rough starting guesses, so adjust them after a week. Set to `0` to turn off. |
+| `exclude_airlines` | Airlines to skip (budget carriers by default). Remove a name to allow it, or add one as Google Flights spells it. |
+| `airports` per destination | Where to search. Add or remove IATA codes. |
+| `trips` per group or destination | `["return"]`, `["one-way"]`, or both |
+| `trip_lengths` per group or destination | Return-trip lengths to try, in days |
+| `round_trip_target`, `one_way_target` | Telegram alert whenever a fare is at or below this. These are rough starting guesses for full-service airlines, so adjust them after a week. Set to `0` to turn off. |
 | `drop_pct` | How far below typical counts as a deal for alerts (default 25%) |
 | `top_n`, `lookback_days` (under `[dashboard]`) | Fares shown per destination, and how recent they must be |
 | `days_ahead_min` / `days_ahead_max` | Departure window (default 14–365 days) |
-| `one_way_samples` / `round_trip_samples` | Searches per airport per run. More means faster coverage but longer runs. |
+| `one_way_samples` / `round_trip_samples` | Searches per airport per run. More means faster coverage but longer runs. Europe uses 2 because it has many airports. |
 | `max_stops` | Uncomment to cap stops. Transits are allowed by default. |
 | `hide_self_transfer` | Hides separate-ticket itineraries, which are cheaper but unprotected if you miss a connection |
 
-To add a destination, copy a region block, give it a new name, and list its airports. You can also give an airport a display name under `[names]`.
+To add a destination, copy a block such as `[regions.greece]`, give it a new name, set its `group`, and list its airports. You can also give an airport a display name under `[names]`.
+
+When you change the airline list, fares on newly excluded airlines are removed from the saved history on the next run, and those dates get searched again.
 
 To change how often it runs, edit the `cron` line in `.github/workflows/tracker.yml`. Times are in UTC.
 

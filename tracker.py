@@ -31,6 +31,7 @@ import html
 import json
 import os
 import random
+import re
 import ssl
 import statistics
 import time
@@ -76,8 +77,12 @@ AIRPORT_NAMES = {
     "ICN": "Seoul", "PUS": "Busan",
     "SYD": "Sydney", "MEL": "Melbourne", "BNE": "Brisbane", "PER": "Perth",
     "AKL": "Auckland", "CHC": "Christchurch",
-    "LHR": "London", "CDG": "Paris", "AMS": "Amsterdam", "FRA": "Frankfurt",
-    "FCO": "Rome", "BCN": "Barcelona", "IST": "Istanbul",
+    "LIS": "Lisbon", "OPO": "Porto", "MAD": "Madrid", "BCN": "Barcelona", "CDG": "Paris", "NCE": "Nice",
+    "DUB": "Dublin", "AMS": "Amsterdam", "BRU": "Brussels", "FRA": "Frankfurt", "MUC": "Munich",
+    "LUX": "Luxembourg", "FCO": "Rome", "MXP": "Milan", "ATH": "Athens", "ZAG": "Zagreb",
+    "DBV": "Dubrovnik", "LJU": "Ljubljana", "VIE": "Vienna", "PRG": "Prague", "BUD": "Budapest",
+    "CPH": "Copenhagen", "ARN": "Stockholm", "HEL": "Helsinki", "KEF": "Reykjavik", "OSL": "Oslo",
+    "LHR": "London", "IST": "Istanbul",
     "LAX": "Los Angeles", "SFO": "San Francisco", "JFK": "New York", "SEA": "Seattle",
 }
 
@@ -189,8 +194,29 @@ def week_key(dest: str, trip: str, d: date) -> str:
 
 
 def load_config(path: Path = CONFIG_PATH) -> dict:
+    """Load config.toml. Each region inherits any settings from its [groups.<name>] block."""
     with open(path, "rb") as f:
-        return tomllib.load(f)
+        cfg = tomllib.load(f)
+    groups = cfg.get("groups", {})
+    for rk, region in cfg.get("regions", {}).items():
+        group = groups.get(region.get("group", ""), {})
+        merged = {k: v for k, v in group.items() if k != "label"}
+        merged.update(region)
+        merged["group_label"] = group.get("label", "")
+        cfg["regions"][rk] = merged
+    names = [n for n in cfg["search"].get("exclude_airlines", []) if n.strip()]
+    cfg["_exclude_re"] = (
+        re.compile(r"\b(?:" + "|".join(re.escape(n.strip()) for n in names) + r")\b", re.IGNORECASE)
+        if names
+        else None
+    )
+    return cfg
+
+
+def is_excluded(cfg: dict, airlines: str) -> bool:
+    """True if any airline on the itinerary is on the exclude_airlines list."""
+    rx = cfg.get("_exclude_re")
+    return bool(rx and rx.search(airlines))
 
 
 def load_history(path: Path = PRICES_PATH) -> list[Obs]:
@@ -288,9 +314,12 @@ def search_cheapest(cfg: dict, dest: str, depart: date, ret: date | None):
         results = get_flights(build_query(cfg, dest, depart, ret))
     except FlightsNotFound:
         return None
-    priced = [f for f in results if isinstance(f.price, int) and f.price > 0]
+    priced = [
+        f for f in results
+        if isinstance(f.price, int) and f.price > 0 and not is_excluded(cfg, ", ".join(f.airlines))
+    ]
     if not priced:
-        return None
+        return None  # no flights, or only ones on excluded airlines
     best = min(priced, key=lambda f: f.price)
     return best.price, ", ".join(best.airlines), max(len(best.flights) - 1, 0)
 
@@ -337,7 +366,10 @@ def plan_searches(
     for region_key, region in cfg["regions"].items():
         lengths = region.get("trip_lengths") or [7]
         for dest in region["airports"]:
-            samples = {"ow": int(s.get("one_way_samples", 3)), "rt": int(s.get("round_trip_samples", 3))}
+            samples = {
+                "ow": int(region.get("one_way_samples", s.get("one_way_samples", 3))),
+                "rt": int(region.get("round_trip_samples", s.get("round_trip_samples", 3))),
+            }
             for trip in region_trips(region):
                 n = samples[trip]
                 picks: list[tuple] = []
@@ -393,6 +425,28 @@ def run_searches(cfg: dict, plan: list[tuple], now: datetime, search_fn=None, sl
 
 
 # ------------------------------------------------------------------ deal detection
+
+
+def prepare_history(cfg: dict, history: list[Obs], state: dict) -> tuple[list[Obs], int]:
+    """Apply the current settings to saved fares.
+
+    Drops fares on airlines now excluded, and files each fare under the region
+    its airport belongs to today. If the airline list changed, forgets which
+    weeks were already searched, so weeks that only had excluded fares get
+    searched again soon.
+    """
+    airport_region = {a: rk for rk, r in cfg["regions"].items() for a in r["airports"]}
+    kept = []
+    for o in history:
+        if is_excluded(cfg, o.airlines):
+            continue
+        o.region = airport_region.get(o.dest, o.region)
+        kept.append(o)
+    signature = "|".join(sorted(n.strip().lower() for n in cfg["search"].get("exclude_airlines", [])))
+    if state.get("airline_filter") != signature:
+        state["checked"] = {}
+        state["airline_filter"] = signature
+    return kept, len(history) - len(kept)
 
 
 def baselines(history: list[Obs], now: datetime, days: int, min_samples: int) -> dict[tuple, float]:
@@ -491,11 +545,29 @@ def format_deals(cfg: dict, deals: list[Deal], today: date) -> str:
     return "\n\n".join(blocks)
 
 
+def region_groups(cfg: dict) -> list[tuple[str, list[str]]]:
+    """[(group label, [region keys])] in config order."""
+    out: dict[str, list[str]] = {}
+    for rk, region in cfg["regions"].items():
+        out.setdefault(region.get("group_label", ""), []).append(rk)
+    return list(out.items())
+
+
+def dest_label(cfg: dict, o: Obs) -> str:
+    """'Japan, Osaka' or just 'Hong Kong' when the city and region share a name."""
+    region = cfg["regions"].get(o.region, {}).get("label", o.region)
+    city = {**AIRPORT_NAMES, **cfg.get("names", {})}.get(o.dest, o.dest)
+    return region if city == region else f"{region}, {city}"
+
+
 def format_digest(cfg: dict, history: list[Obs], now: datetime, today: date, base: dict, run_info: str) -> str:
     hours = int(cfg["alerts"].get("digest_lookback_hours", 72))
     cutoff = now - timedelta(hours=hours)
     latest: dict[str, Obs] = {}
     for o in history:
+        region = cfg["regions"].get(o.region)
+        if not region or o.dest not in region["airports"] or o.trip not in region_trips(region):
+            continue
         if o.checked_at >= cutoff and o.depart > today:
             if o.key not in latest or o.checked_at > latest[o.key].checked_at:
                 latest[o.key] = o
@@ -505,23 +577,25 @@ def format_digest(cfg: dict, history: list[Obs], now: datetime, today: date, bas
         if k not in best or o.price < best[k].price:
             best[k] = o
 
+    def line(o: Obs, extra: str = "") -> str:
+        return (
+            f"{link(cfg, o, money(cfg, o.price))} {esc(dest_label(cfg, o))} · {fmt_dates(o, today)} · "
+            f"{esc(o.airlines)}{extra}"
+        )
+
     s = cfg["search"]
     blocks = [
         f"☀️ <b>Cheapest fares from {esc(s['origin'])}</b>\n"
-        f"<i>Seen in the last {hours}h · {esc(s.get('cabin', 'economy'))} · "
-        f"{s.get('adults', 1)} adult(s) · tap a price to open it</i>"
+        f"<i>Seen in the last {hours}h · {esc(s.get('cabin', 'economy'))} · tap a price to open it</i>"
     ]
-    for region_key, region in cfg["regions"].items():
-        lines = [f"<b>{esc(region.get('label', region_key))}</b>"]
-        for label, trip in (("One-way", "ow"), ("Return", "rt")):
-            o = best.get((region_key, trip))
-            if o:
-                lines.append(
-                    f"{label}: {link(cfg, o, money(cfg, o.price))} {esc(place(cfg, o.dest))} · "
-                    f"{fmt_dates(o, today)} · {esc(o.airlines)} · {stops_text(o.stops)}"
-                )
-        if len(lines) > 1:
-            blocks.append("\n".join(lines))
+    for label, keys in region_groups(cfg):
+        rows = sorted((best[(k, "rt")] for k in keys if (k, "rt") in best), key=lambda o: o.price)
+        if rows:
+            title = "Return" + (f", {label}" if label else "")
+            blocks.append("\n".join([f"<b>{esc(title)}</b>"] + [line(o) for o in rows]))
+    one_way = sorted((o for (k, t), o in best.items() if t == "ow"), key=lambda o: o.price)[:5]
+    if one_way:
+        blocks.append("\n".join(["<b>One-way, cheapest 5</b>"] + [line(o) for o in one_way]))
 
     drops = sorted(
         ((o.price / base[(o.dest, o.trip)], o) for o in latest.values() if (o.dest, o.trip) in base),
@@ -532,17 +606,14 @@ def format_digest(cfg: dict, history: list[Obs], now: datetime, today: date, bas
         lines = ["📉 <b>Furthest below typical</b>"]
         for r, o in drops:
             kind = "return" if o.ret else "one-way"
-            lines.append(
-                f"{link(cfg, o, money(cfg, o.price))} {esc(place(cfg, o.dest))} {kind} · "
-                f"{fmt_dates(o, today)} · {round((1 - r) * 100)}% below typical"
-            )
+            lines.append(line(o, f" · {kind}, {round((1 - r) * 100)}% below typical"))
         blocks.append("\n".join(lines))
 
     if len(blocks) == 1:
         blocks.append("No fares in the last few days yet. They'll appear after the next few runs.")
     url = cfg.get("dashboard", {}).get("url", "").strip()
     if url:
-        blocks.append(f'<a href="{esc(url)}">Open the dashboard</a> for the top fares per destination')
+        blocks.append(f'<a href="{esc(url)}">Open the dashboard</a> for the top 3 fares per destination')
     blocks.append(f"<i>{esc(run_info)}</i>")
     return "\n\n".join(blocks)
 
@@ -586,6 +657,8 @@ nav { margin-top: 2rem; }
 .chip-name { font-weight: 500; }
 .chip-price { font: 700 1.4rem/1.1 var(--display); color: var(--accent); margin-top: .1rem; }
 .chip-kind { font-size: .8rem; color: var(--muted); }
+.group-title { font-size: .9rem; color: var(--muted); margin: 1.1rem 0 .45rem; }
+.nav-title + .group-title { margin-top: 0; }
 section { margin-top: 3rem; scroll-margin-top: 1rem; }
 h2 { font: 700 2rem/1.1 var(--display); margin: 0; padding-bottom: .35rem; border-bottom: 3px solid var(--ink); }
 h3 { font-weight: 600; font-size: 1rem; color: var(--muted); margin: 1.25rem 0 0; }
@@ -674,18 +747,20 @@ def dashboard_data(cfg: dict, history: list[Obs], now: datetime, today: date) ->
             for o in fares:
                 by_city.setdefault(o.dest, o)
             groups.append({"trip": trip, "top": fares[:top_n], "by_city": list(by_city.values())})
-        regions.append({"key": rk, "label": region.get("label", rk), "groups": groups})
+        regions.append({"key": rk, "label": region.get("label", rk), "group": region.get("group_label", ""), "groups": groups})
     return {"regions": regions, "lookback_days": days}
 
 
-def _index_entries(data: dict) -> list[tuple]:
-    """One entry per region, cheapest first: (region, group shown, cheapest fare or None)."""
-    out = []
+def _index_groups(data: dict) -> list[tuple[str, list[tuple]]]:
+    """[(group label, entries)], where each entry is (region, trip group shown, cheapest fare or None),
+    cheapest first within each group. Groups keep their config order."""
+    grouped: dict[str, list[tuple]] = {}
     for r in data["regions"]:
         g = next((g for g in r["groups"] if g["trip"] == "rt"), r["groups"][0])
-        out.append((r, g, g["top"][0] if g["top"] else None))
-    out.sort(key=lambda x: x[2].price if x[2] else float("inf"))
-    return out
+        grouped.setdefault(r["group"], []).append((r, g, g["top"][0] if g["top"] else None))
+    for entries in grouped.values():
+        entries.sort(key=lambda x: x[2].price if x[2] else float("inf"))
+    return list(grouped.items())
 
 
 def render_html(cfg: dict, data: dict, now: datetime, today: date, base: dict) -> str:
@@ -697,15 +772,21 @@ def render_html(cfg: dict, data: dict, now: datetime, today: date, base: dict) -
     def url(o: Obs) -> str:
         return esc(flights_url(build_query(cfg, o.dest, o.depart, o.ret)))
 
-    chips = []
-    for r, g, best in _index_entries(data):
-        inner = (
-            f'<span class="chip-price">{money(cfg, best.price)}</span>'
-            f'<span class="chip-kind">{TRIP_NAMES[g["trip"]].lower()}, {esc(names.get(best.dest, best.dest))}</span>'
-            if best
-            else '<span class="chip-kind">no fares yet</span>'
-        )
-        chips.append(f'<li><a href="#{esc(r["key"])}"><span class="chip-name">{esc(r["label"])}</span>{inner}</a></li>')
+    index_groups = _index_groups(data)
+    nav = []
+    for group_label, entries in index_groups:
+        chips = []
+        for r, g, best in entries:
+            inner = (
+                f'<span class="chip-price">{money(cfg, best.price)}</span>'
+                f'<span class="chip-kind">{TRIP_NAMES[g["trip"]].lower()}, {esc(names.get(best.dest, best.dest))}</span>'
+                if best
+                else '<span class="chip-kind">no fares yet</span>'
+            )
+            chips.append(f'<li><a href="#{esc(r["key"])}"><span class="chip-name">{esc(r["label"])}</span>{inner}</a></li>')
+        if group_label and len(index_groups) > 1:
+            nav.append(f'<p class="group-title">{esc(group_label)}</p>')
+        nav.append(f'<ul class="index">{"".join(chips)}</ul>')
 
     sections = []
     for r in data["regions"]:
@@ -772,7 +853,7 @@ def render_html(cfg: dict, data: dict, now: datetime, today: date, base: dict) -
 </header>
 <nav aria-label="Regions, cheapest first">
 <p class="nav-title">Where it’s cheapest right now</p>
-<ul class="index">{"".join(chips)}</ul>
+{"".join(nav)}
 </nav>
 <main>{"".join(sections)}</main>
 <footer><p>Fares from Google Flights for {s.get("adults", 1)} adult in {esc(s.get("cabin", "economy"))}, seen in the last {days} days. Tap a fare to open it. Budget airlines may not include bags, so confirm the price before booking.</p></footer>
@@ -799,14 +880,17 @@ def render_md(cfg: dict, data: dict, now: datetime, today: date, base: dict) -> 
         f"Fares for {s.get('adults', 1)} adult in {s.get('cabin', 'economy')}, seen in the last "
         f"{data['lookback_days']} days. Click a price to open it in Google Flights.",
         "",
-        "**Cheapest by region:** "
-        + " · ".join(
-            f"[{r['label']}](#{r['label'].lower().replace(' ', '-')}) "
-            + (f"{money(cfg, best.price)} {TRIP_NAMES[g['trip']].lower()}" if best else "no fares yet")
-            for r, g, best in _index_entries(data)
-        ),
-        "",
     ]
+    for group_label, entries in _index_groups(data):
+        out += [
+            f"**{group_label or 'Cheapest by destination'}:** "
+            + " · ".join(
+                f"[{r['label']}](#{r['label'].lower().replace(' ', '-')}) "
+                + (f"{money(cfg, best.price)} {TRIP_NAMES[g['trip']].lower()}" if best else "no fares yet")
+                for r, g, best in entries
+            ),
+            "",
+        ]
     for r in data["regions"]:
         out += [f"## {r['label']}", ""]
         multi = len(r["groups"]) > 1
@@ -863,16 +947,21 @@ def telegram_api(method: str, payload: dict | None = None) -> dict:
         raise RuntimeError(f"Telegram {method} failed ({e.code}): {detail}") from None
 
 
+def visible_len(text: str) -> int:
+    """Length as Telegram counts it: without HTML tags (so link addresses don't count)."""
+    return len(html.unescape(re.sub(r"<[^>]+>", "", text)))
+
+
 def split_message(text: str, limit: int = TELEGRAM_LIMIT) -> list[str]:
     chunks, cur = [], ""
     for block in text.split("\n\n"):
         candidate = f"{cur}\n\n{block}" if cur else block
-        if len(candidate) <= limit:
+        if visible_len(candidate) <= limit:
             cur = candidate
             continue
         if cur:
             chunks.append(cur)
-        while len(block) > limit:  # a single oversized block: split on line breaks
+        while visible_len(block) > limit:  # a single oversized block: split on line breaks
             cut = block.rfind("\n", 0, limit)
             cut = cut if cut > 0 else limit
             chunks.append(block[:cut])
@@ -1001,7 +1090,10 @@ def _run(args, now: datetime | None) -> int:
         print(f"Nothing due yet (last search {hours_since(state.get('last_run'), now):.1f}h ago).")
         return 0
 
-    history = load_history()
+    history, dropped = prepare_history(cfg, load_history(), state)
+    checked = state["checked"]  # may have been reset by prepare_history
+    if dropped:
+        log(f"Removed {dropped} saved fares on excluded airlines.")
     base = baselines(history, now, int(a.get("baseline_days", 30)), int(a.get("min_samples", 15)))
     telegram_ok = True
 
@@ -1081,7 +1173,7 @@ def main() -> int:
     if args.dashboard:
         cfg = load_config()
         now = datetime.now(timezone.utc).replace(microsecond=0)
-        history = load_history()
+        history, _ = prepare_history(cfg, load_history(), {})
         a = cfg["alerts"]
         base = baselines(history, now, int(a.get("baseline_days", 30)), int(a.get("min_samples", 15)))
         write_dashboards(cfg, history, now, now.astimezone(SGT).date(), base)
