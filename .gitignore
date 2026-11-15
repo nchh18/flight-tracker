@@ -1,0 +1,7 @@
+# Local-only files: never commit these
+secrets.toml
+.venv/
+__pycache__/
+data/.lock
+data/*.tmp
+data/tracker.log
