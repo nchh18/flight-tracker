@@ -1,0 +1,48 @@
+name: Flight tracker
+
+on:
+  schedule:
+    # Every 8 hours. Times are UTC: 08:17, 16:17 and 00:17 Singapore time.
+    # (Off the hour on purpose: GitHub's scheduler is busiest at :00.)
+    - cron: "17 0,8,16 * * *"
+  workflow_dispatch: # adds a "Run workflow" button for manual runs
+
+permissions:
+  contents: write # lets the job save the price history and dashboard back to the repo
+
+concurrency:
+  group: flight-tracker
+  cancel-in-progress: false
+
+jobs:
+  track:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Search fares, update dashboard, send Telegram alerts
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        # Manual runs search straight away; scheduled runs follow config.toml.
+        run: python tracker.py ${{ github.event_name == 'workflow_dispatch' && '--force' || '' }}
+
+      - name: Save price history and dashboard
+        if: success() || failure() # keep whatever was collected, even if the run ended badly
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          for path in data docs DASHBOARD.md; do [ -e "$path" ] && git add -A "$path"; done
+          if git diff --cached --quiet; then echo "No changes"; exit 0; fi
+          git commit -m "Update fares and dashboard"
+          git pull --rebase
+          git push
