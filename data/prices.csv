@@ -252,3 +252,91 @@ checked_at,region,dest,trip,depart,return,price,airlines,stops
 2026-11-16T18:38:18+00:00,finland,HEL,rt,2027-07-15,2027-07-29,2398,"Etihad, Condor, Finnair",2
 2026-11-16T18:38:18+00:00,hungary,BUD,rt,2027-05-16,2027-05-26,2072,"Malaysia Airlines, Condor, Lufthansa",3
 2026-11-16T18:38:18+00:00,japan,CTS,rt,2027-01-12,2027-01-19,732,"ANA, Air Do",1
+2026-11-17T08:01:58+00:00,china,PEK,rt,2027-09-18,2027-09-23,1381,Air China,0
+2026-11-17T08:01:58+00:00,thailand,BKK,rt,2026-12-14,2026-12-21,516,Malaysia Airlines,1
+2026-11-17T08:01:58+00:00,japan,FUK,rt,2027-03-02,2027-03-07,862,Korean Air,1
+2026-11-17T08:01:58+00:00,italy,FCO,rt,2027-04-26,2027-05-10,753,Turkish Airlines,1
+2026-11-17T08:01:58+00:00,japan,CTS,rt,2027-07-17,2027-07-22,738,"ANA, Air Do",1
+2026-11-17T08:01:58+00:00,hungary,BUD,rt,2027-06-14,2027-06-24,1815,"Malaysia Airlines, THAI, Condor, Lufthansa",3
+2026-11-17T08:01:58+00:00,japan,HND,rt,2027-02-08,2027-02-15,778,Philippine Airlines,1
+2026-11-17T08:01:58+00:00,thailand,BKK,rt,2027-04-17,2027-04-24,436,Malaysia Airlines,1
+2026-11-17T08:01:58+00:00,netherlands,AMS,ow,2027-02-19,,365,Oman Air,1
+2026-11-17T08:01:58+00:00,australia,PER,rt,2027-03-12,2027-03-22,604,Malaysia Airlines,1
+2026-11-17T08:01:58+00:00,denmark,CPH,rt,2027-08-25,2027-09-04,2454,"Malaysia Airlines, Condor, Scandinavian Airlines",3
+2026-11-17T08:01:58+00:00,thailand,HKT,rt,2027-03-19,2027-03-23,305,Singapore Airlines,0
+2026-11-17T08:01:58+00:00,japan,HND,rt,2027-07-07,2027-07-12,783,Philippine Airlines,1
+2026-11-17T08:01:58+00:00,germany,FRA,ow,2027-09-25,,585,Etihad,1
+2026-11-17T08:01:58+00:00,vietnam,HAN,rt,2027-05-22,2027-05-26,330,Vietnam Airlines,0
+2026-11-17T08:01:58+00:00,austria,VIE,ow,2027-02-21,,618,"Oman Air, SalamAir",1
+2026-11-17T08:01:58+00:00,thailand,CNX,rt,2027-03-14,2027-03-21,377,Malaysia Airlines,1
+2026-11-17T08:01:58+00:00,finland,HEL,rt,2026-12-21,2027-01-04,1487,Turkish Airlines,1
+2026-11-17T08:01:58+00:00,finland,HEL,rt,2027-07-11,2027-07-21,2256,"Etihad, Condor, Finnair",2
+2026-11-17T08:01:58+00:00,italy,FCO,rt,2027-02-17,2027-02-27,798,Turkish Airlines,1
+2026-11-17T08:01:58+00:00,vietnam,DAD,rt,2027-05-07,2027-05-11,304,Malaysia Airlines,1
+2026-11-17T08:01:58+00:00,finland,HEL,ow,2026-12-02,,708,Emirates,1
+2026-11-17T08:01:58+00:00,belgium,BRU,ow,2026-12-26,,638,Emirates,1
+2026-11-17T08:01:58+00:00,japan,FUK,rt,2027-09-02,2027-09-09,1100,Singapore Airlines,0
+2026-11-17T08:01:58+00:00,portugal,LIS,ow,2027-10-08,,714,Emirates,1
+2026-11-17T08:01:58+00:00,hungary,BUD,rt,2027-05-16,2027-05-26,2070,"Malaysia Airlines, Condor, Lufthansa",3
+2026-11-17T08:01:58+00:00,sweden,ARN,rt,2027-05-31,2027-06-14,1560,"Malaysia Airlines, THAI, Condor",3
+2026-11-17T08:01:58+00:00,australia,PER,rt,2027-02-07,2027-02-14,1126,Singapore Airlines,0
+2026-11-17T08:01:58+00:00,germany,FRA,ow,2027-03-11,,556,Turkish Airlines,1
+2026-11-17T08:01:58+00:00,china,CAN,rt,2027-04-04,2027-04-09,644,Singapore Airlines,0
+2026-11-17T08:01:58+00:00,france,NCE,rt,2027-08-02,2027-08-12,2625,"Etihad, Condor, Lufthansa",2
+2026-11-17T08:01:58+00:00,korea,ICN,rt,2027-05-15,2027-05-22,689,Malaysia Airlines,1
+2026-11-17T08:01:58+00:00,netherlands,AMS,rt,2027-08-17,2027-08-31,2370,"THAI, Condor, Lufthansa",2
+2026-11-17T08:01:58+00:00,italy,MXP,rt,2027-03-10,2027-03-20,863,Turkish Airlines,1
+2026-11-17T08:01:58+00:00,japan,CTS,rt,2027-01-12,2027-01-19,733,ANA,1
+2026-11-17T08:01:58+00:00,greece,ATH,ow,2027-05-19,,514,Gulf Air,1
+2026-11-17T08:01:58+00:00,denmark,CPH,ow,2027-02-24,,782,Turkish Airlines,1
+2026-11-17T08:01:58+00:00,iceland,KEF,ow,2027-06-15,,734,Lufthansa,4
+2026-11-17T08:01:58+00:00,belgium,BRU,rt,2027-06-18,2027-06-28,1873,"THAI, Condor, Lufthansa",2
+2026-11-17T08:01:58+00:00,vietnam,HAN,rt,2027-01-17,2027-01-24,333,Sun PhuQuoc Airways,1
+2026-11-17T08:01:58+00:00,germany,MUC,ow,2027-07-13,,599,Emirates,1
+2026-11-17T08:01:58+00:00,hong_kong,HKG,rt,2027-06-07,2027-06-11,421,Malaysia Airlines,1
+2026-11-17T08:01:58+00:00,ireland,DUB,rt,2027-08-18,2027-08-28,2754,"THAI, Condor, Lufthansa",2
+2026-11-17T08:01:58+00:00,denmark,CPH,rt,2027-08-07,2027-08-17,2524,"Malaysia Airlines, Condor, Scandinavian Airlines",3
+2026-11-17T08:01:58+00:00,netherlands,AMS,rt,2027-04-15,2027-04-29,1007,Etihad,1
+2026-11-17T08:01:58+00:00,finland,HEL,ow,2027-08-08,,794,Emirates,1
+2026-11-17T08:01:58+00:00,france,NCE,ow,2027-07-17,,887,SWISS,1
+2026-11-17T08:01:58+00:00,germany,MUC,ow,2027-04-21,,579,Etihad,1
+2026-11-17T08:01:58+00:00,japan,FUK,rt,2027-01-13,2027-01-20,867,"Cathay Pacific, Hong Kong Express",1
+2026-11-17T08:01:58+00:00,vietnam,DAD,rt,2027-07-07,2027-07-11,320,Malaysia Airlines,1
+2026-11-17T08:01:58+00:00,greece,ATH,rt,2027-08-20,2027-08-30,1488,SWISS,1
+2026-11-17T08:01:58+00:00,belgium,BRU,rt,2027-06-24,2027-07-04,1971,"THAI, Condor, Lufthansa",2
+2026-11-17T08:01:58+00:00,france,NCE,ow,2027-07-25,,1576,"Etihad, Condor, Lufthansa",2
+2026-11-17T08:01:58+00:00,spain,MAD,rt,2027-06-17,2027-07-01,2070,"THAI, Condor, Lufthansa",2
+2026-11-17T08:01:58+00:00,taiwan,TPE,rt,2027-06-25,2027-07-02,453,China Airlines,0
+2026-11-17T08:01:58+00:00,thailand,CNX,rt,2027-07-11,2027-07-15,503,Malaysia Airlines,1
+2026-11-17T08:01:58+00:00,portugal,LIS,rt,2027-06-02,2027-06-16,1100,Lufthansa,1
+2026-11-17T08:01:58+00:00,luxembourg,LUX,ow,2027-04-01,,733,"Emirates, Luxair",2
+2026-11-17T08:01:58+00:00,norway,OSL,ow,2027-01-23,,765,"Etihad, Scandinavian Airlines",2
+2026-11-17T08:01:58+00:00,china,PEK,rt,2027-08-08,2027-08-13,1381,Air China,0
+2026-11-17T08:01:58+00:00,taiwan,TPE,rt,2027-07-24,2027-07-31,453,China Airlines,0
+2026-11-17T08:01:58+00:00,spain,BCN,ow,2026-12-04,,524,Qatar Airways,1
+2026-11-17T08:01:58+00:00,australia,BNE,rt,2027-07-20,2027-07-27,1366,Singapore Airlines,0
+2026-11-17T08:01:58+00:00,germany,FRA,rt,2026-12-17,2026-12-27,1368,Etihad,1
+2026-11-17T08:01:58+00:00,france,CDG,ow,2027-01-10,,628,Emirates,1
+2026-11-17T08:01:58+00:00,italy,MXP,rt,2027-05-07,2027-05-21,875,Qatar Airways,1
+2026-11-17T08:01:58+00:00,austria,VIE,ow,2027-05-01,,652,Emirates,1
+2026-11-17T08:01:58+00:00,australia,SYD,rt,2027-02-28,2027-03-07,688,Shenzhen,1
+2026-11-17T08:01:58+00:00,australia,BNE,rt,2027-06-24,2027-07-04,862,Philippine Airlines,1
+2026-11-17T08:01:58+00:00,new_zealand,CHC,rt,2027-08-06,2027-08-16,1364,Air New Zealand,1
+2026-11-17T08:01:58+00:00,thailand,HKT,rt,2027-03-13,2027-03-17,315,Malaysia Airlines,1
+2026-11-17T08:01:58+00:00,germany,MUC,rt,2027-02-18,2027-02-28,962,Turkish Airlines,1
+2026-11-17T08:01:58+00:00,japan,KIX,rt,2027-01-01,2027-01-08,898,Malaysia Airlines,1
+2026-11-17T08:01:58+00:00,spain,BCN,rt,2027-08-15,2027-08-29,2114,"Malaysia Airlines, THAI, Condor",3
+2026-11-17T08:01:58+00:00,taiwan,TPE,rt,2027-05-01,2027-05-08,423,China Airlines,0
+2026-11-17T08:01:58+00:00,france,NCE,rt,2027-05-01,2027-05-15,4467,"Etihad, Condor, Lufthansa",2
+2026-11-17T08:01:58+00:00,japan,KIX,rt,2027-02-18,2027-02-25,782,Philippine Airlines,1
+2026-11-17T08:01:58+00:00,spain,MAD,ow,2027-08-07,,1986,"Etihad, Condor, Air Europa",2
+2026-11-17T08:01:58+00:00,china,SZX,rt,2027-03-21,2027-03-28,413,Hainan,1
+2026-11-17T08:01:58+00:00,new_zealand,CHC,rt,2027-02-09,2027-02-23,1223,Qantas,1
+2026-11-17T08:01:58+00:00,korea,ICN,rt,2027-02-27,2027-03-06,539,China Southern,1
+2026-11-17T08:01:58+00:00,italy,MXP,ow,2027-07-16,,547,Emirates,1
+2026-11-17T08:01:58+00:00,japan,KIX,rt,2027-01-28,2027-02-04,782,Philippine Airlines,1
+2026-11-17T08:01:58+00:00,germany,FRA,rt,2027-01-30,2027-02-09,1027,"Etihad, Condor",1
+2026-11-17T08:01:58+00:00,korea,PUS,rt,2027-02-05,2027-02-12,1041,Korean Air,1
+2026-11-17T08:01:58+00:00,greece,ATH,ow,2027-04-07,,477,Gulf Air,1
+2026-11-17T08:01:58+00:00,italy,FCO,ow,2027-08-19,,813,Finnair,1
+2026-11-17T08:01:58+00:00,hungary,BUD,ow,2027-02-23,,579,Emirates,1
