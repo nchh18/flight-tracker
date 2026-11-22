@@ -1126,3 +1126,47 @@ checked_at,region,dest,trip,depart,return,price,airlines,stops
 2026-11-21T21:41:36+00:00,korea,PUS,rt,2027-04-15,2027-04-20,742,China Airlines,1
 2026-11-21T21:41:36+00:00,germany,FRA,rt,2027-04-15,2027-04-25,840,Etihad,1
 2026-11-21T21:41:36+00:00,czechia,PRG,ow,2027-07-17,,1259,"THAI, Condor",2
+2026-11-22T06:59:16+00:00,finland,HEL,ow,2027-01-22,,798,Qatar Airways,1
+2026-11-22T06:59:16+00:00,germany,FRA,ow,2026-12-06,,371,"Malaysia Airlines, Oman Air",2
+2026-11-22T06:59:16+00:00,china,CAN,rt,2027-02-16,2027-02-23,424,Cathay Pacific,1
+2026-11-22T06:59:16+00:00,belgium,BRU,rt,2026-12-29,2027-01-12,1078,Emirates,1
+2026-11-22T06:59:16+00:00,finland,HEL,ow,2027-07-09,,822,"Etihad, Finnair",2
+2026-11-22T06:59:16+00:00,france,NCE,ow,2027-02-02,,503,Turkish Airlines,1
+2026-11-22T06:59:16+00:00,korea,ICN,rt,2027-02-18,2027-02-25,566,Cathay Pacific,1
+2026-11-22T06:59:16+00:00,japan,FUK,rt,2027-02-19,2027-02-26,796,Philippine Airlines,1
+2026-11-22T06:59:16+00:00,norway,OSL,ow,2027-01-23,,765,"Etihad, Scandinavian Airlines",2
+2026-11-22T06:59:16+00:00,japan,HND,rt,2027-08-10,2027-08-17,873,Cathay Pacific,1
+2026-11-22T06:59:16+00:00,japan,HND,rt,2027-02-22,2027-03-01,577,China Southern,1
+2026-11-22T06:59:16+00:00,germany,MUC,ow,2027-02-20,,614,Turkish Airlines,1
+2026-11-22T06:59:16+00:00,denmark,CPH,ow,2027-03-08,,631,Turkish Airlines,1
+2026-11-22T06:59:16+00:00,italy,MXP,rt,2027-08-05,2027-08-19,2249,"Malaysia Airlines, THAI, Condor",3
+2026-11-22T06:59:16+00:00,croatia,DBV,ow,2026-12-24,,623,"Qatar Airways, Croatia",2
+2026-11-22T06:59:16+00:00,thailand,CNX,rt,2027-07-14,2027-07-18,688,THAI,1
+2026-11-22T06:59:16+00:00,thailand,HKT,rt,2027-04-23,2027-04-27,298,Singapore Airlines,0
+2026-11-22T06:59:16+00:00,china,PEK,rt,2027-06-06,2027-06-11,733,THAI,1
+2026-11-22T06:59:16+00:00,iceland,KEF,ow,2027-06-15,,1001,Finnair,1
+2026-11-22T06:59:16+00:00,finland,HEL,rt,2027-03-20,2027-04-03,929,"Etihad, Scandinavian Airlines",2
+2026-11-22T06:59:16+00:00,japan,NRT,rt,2027-06-29,2027-07-04,826,Korean Air,1
+2026-11-22T06:59:16+00:00,spain,BCN,ow,2027-02-04,,578,Etihad,1
+2026-11-22T06:59:16+00:00,australia,BNE,rt,2027-01-20,2027-01-27,1581,"Malaysia Airlines, Qantas",2
+2026-11-22T06:59:16+00:00,australia,MEL,rt,2027-08-27,2027-09-03,931,Singapore Airlines,0
+2026-11-22T06:59:16+00:00,italy,FCO,ow,2027-02-15,,517,Gulf Air,1
+2026-11-22T06:59:16+00:00,japan,KIX,rt,2027-09-13,2027-09-20,526,Shandong,1
+2026-11-22T06:59:16+00:00,vietnam,HAN,rt,2027-03-01,2027-03-05,500,Singapore Airlines,0
+2026-11-22T06:59:16+00:00,spain,MAD,rt,2027-05-20,2027-06-03,1669,"Etihad, Condor, Air Europa",2
+2026-11-22T06:59:16+00:00,thailand,BKK,rt,2027-04-01,2027-04-05,373,Malaysia Airlines,1
+2026-11-22T06:59:16+00:00,austria,VIE,rt,2027-05-24,2027-06-03,928,Turkish Airlines,1
+2026-11-22T06:59:16+00:00,new_zealand,AKL,rt,2027-05-02,2027-05-12,1154,Qantas,1
+2026-11-22T06:59:16+00:00,australia,BNE,rt,2027-06-24,2027-07-04,860,Philippine Airlines,1
+2026-11-22T06:59:16+00:00,japan,FUK,rt,2027-06-18,2027-06-23,801,Philippine Airlines,1
+2026-11-22T06:59:16+00:00,france,CDG,ow,2027-02-15,,430,"Malaysia Airlines, Oman Air",2
+2026-11-22T06:59:16+00:00,italy,MXP,ow,2027-09-04,,689,Emirates,1
+2026-11-22T06:59:16+00:00,australia,SYD,rt,2027-02-28,2027-03-07,687,Shenzhen,1
+2026-11-22T06:59:16+00:00,vietnam,DAD,rt,2027-09-04,2027-09-11,395,Singapore Airlines,0
+2026-11-22T06:59:16+00:00,hong_kong,HKG,rt,2026-12-11,2026-12-18,780,Hainan,1
+2026-11-22T06:59:16+00:00,hungary,BUD,rt,2026-12-31,2027-01-14,947,Emirates,1
+2026-11-22T06:59:16+00:00,taiwan,TPE,rt,2027-02-27,2027-03-04,418,China Airlines,0
+2026-11-22T06:59:16+00:00,australia,MEL,rt,2027-05-06,2027-05-16,824,Hainan,1
+2026-11-22T06:59:16+00:00,austria,VIE,ow,2026-12-31,,551,Qatar Airways,1
+2026-11-22T06:59:16+00:00,belgium,BRU,ow,2026-12-26,,638,Emirates,1
+2026-11-22T06:59:16+00:00,germany,MUC,ow,2027-01-10,,937,Qatar Airways,1
