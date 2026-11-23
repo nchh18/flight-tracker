@@ -1254,3 +1254,31 @@ checked_at,region,dest,trip,depart,return,price,airlines,stops
 2026-11-22T16:21:04+00:00,vietnam,SGN,rt,2027-02-24,2027-03-03,245,Vietnam Airlines,0
 2026-11-22T16:21:04+00:00,china,CAN,rt,2027-01-08,2027-01-13,382,Hainan,1
 2026-11-22T16:21:04+00:00,hong_kong,HKG,rt,2027-05-11,2027-05-15,421,Malaysia Airlines,1
+2026-11-23T07:48:44+00:00,belgium,BRU,ow,2026-12-26,,638,Emirates,1
+2026-11-23T07:48:44+00:00,japan,KIX,rt,2027-03-13,2027-03-20,1011,Philippine Airlines,1
+2026-11-23T07:48:44+00:00,spain,BCN,ow,2027-02-04,,578,Etihad,1
+2026-11-23T07:48:44+00:00,korea,ICN,rt,2026-12-31,2027-01-07,616,Cathay Pacific,1
+2026-11-23T07:48:44+00:00,austria,VIE,ow,2026-12-31,,551,Qatar Airways,1
+2026-11-23T07:48:44+00:00,italy,FCO,rt,2027-04-26,2027-05-10,753,Turkish Airlines,1
+2026-11-23T07:48:44+00:00,hungary,BUD,ow,2026-12-24,,632,SWISS,1
+2026-11-23T07:48:44+00:00,italy,FCO,ow,2027-03-03,,480,"Malaysia Airlines, Oman Air",2
+2026-11-23T07:48:44+00:00,luxembourg,LUX,ow,2026-12-09,,603,"Qatar Airways, Luxair",2
+2026-11-23T07:48:44+00:00,czechia,PRG,ow,2027-07-17,,1262,"THAI, Condor",2
+2026-11-23T07:48:44+00:00,denmark,CPH,ow,2027-03-08,,631,Turkish Airlines,1
+2026-11-23T07:48:44+00:00,netherlands,AMS,ow,2027-02-19,,632,Emirates,1
+2026-11-23T07:48:44+00:00,france,NCE,rt,2026-12-27,2027-01-06,1320,Qatar Airways,1
+2026-11-23T07:48:44+00:00,italy,MXP,ow,2027-08-20,,808,Qatar Airways,1
+2026-11-23T07:48:44+00:00,italy,FCO,ow,2027-02-15,,517,Gulf Air,1
+2026-11-23T07:48:44+00:00,japan,HND,rt,2027-06-03,2027-06-10,783,Philippine Airlines,1
+2026-11-23T07:48:44+00:00,japan,FUK,rt,2027-06-28,2027-07-03,756,Philippine Airlines,1
+2026-11-23T07:48:44+00:00,thailand,BKK,rt,2027-02-18,2027-02-22,364,Singapore Airlines,0
+2026-11-23T07:48:44+00:00,thailand,CNX,rt,2027-02-24,2027-03-03,371,Malaysia Airlines,1
+2026-11-23T07:48:44+00:00,japan,NRT,rt,2027-03-06,2027-03-13,778,Philippine Airlines,1
+2026-11-23T07:48:44+00:00,netherlands,AMS,rt,2027-04-15,2027-04-29,1007,Etihad,1
+2026-11-23T07:48:44+00:00,portugal,OPO,ow,2027-02-01,,739,Turkish Airlines,1
+2026-11-23T07:48:44+00:00,germany,FRA,rt,2027-02-09,2027-02-23,829,Turkish Airlines,1
+2026-11-23T07:48:44+00:00,germany,MUC,rt,2027-02-18,2027-02-28,936,Turkish Airlines,1
+2026-11-23T07:48:44+00:00,new_zealand,CHC,rt,2027-06-10,2027-06-20,1304,Qantas,1
+2026-11-23T07:48:44+00:00,korea,PUS,rt,2026-12-20,2026-12-27,1325,Malaysia Airlines,1
+2026-11-23T07:48:44+00:00,australia,SYD,rt,2027-03-05,2027-03-12,802,Qantas,1
+2026-11-23T07:48:44+00:00,australia,BNE,rt,2026-12-07,2026-12-14,1802,Malaysia Airlines,1
